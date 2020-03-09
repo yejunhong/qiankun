@@ -1,0 +1,8 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/micro/node_modules
+/micro/.cache
+/micro/dist
+/app/test1/node_modules
+/app/test2/node_modules
