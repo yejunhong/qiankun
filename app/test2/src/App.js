@@ -1,5 +1,43 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react-lite';
 import './App.css';
+
+
+const iniList = [];
+for (let i = 0; i < 10; i++) {
+  iniList.push({id: i, name: `name${i}`});
+}
+
+const ob = observable({list: iniList});
+
+const Li = observer(({v, k, sort}) => {
+  console.log(v.id)
+  return (
+    <li key={k}>{v.name} <span onClick={() => sort(k, v)}>下移</span></li>
+  )
+})
+
+const List = observer(() => {
+  const listdata = ob.list;
+  const sort = useCallback((k, v) => {
+    const idx = listdata.findIndex((t) => t.id === v.id);
+    const d = listdata[idx];
+    listdata[idx] = listdata[idx + 1];
+    listdata[idx + 1] = d; 
+  }, [listdata]);
+  return (
+    <div>
+      <ul>
+        {
+          listdata.map((v, k) => {
+            return (<Li key={k} v={v} k={k} sort={sort}/>)
+          })
+        }
+      </ul>
+    </div>
+  )
+});
 
 function Child({callback}) {
   const [count, setCount] = useState(() => callback())
@@ -43,6 +81,8 @@ function App() {
       <p>-------</p>
       <Child callback={click1}/>
       {ChildMemo}
+      <p>-------</p>
+      <List/>
     </div>
   );
 }
